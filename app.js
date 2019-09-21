@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const morgan = require('morgan');
 
 const app = express();
 const port = 3000;
@@ -8,7 +9,12 @@ const tours = JSON.parse(
 );
 
 // app.use() to add middleware
+app.use(morgan('dev')); // show a summary of the request - response
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log('hello from middleware');
+  next();
+});
 
 // GET
 const getAllTours = (req, res) => {
@@ -60,15 +66,68 @@ const deleteTour = (req, res) => {
   console.log(tours);
 };
 
-app
-  .route('/api/v1/tours')
+//USER
+const getAllUsers = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'unimplemented'
+  });
+};
+
+const getUsersById = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'unimplemented'
+  });
+};
+
+const createUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'unimplemented'
+  });
+};
+
+const updateUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'unimplemented'
+  });
+};
+
+const deleteUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'unimplemented'
+  });
+};
+
+// Routers
+
+const tourRouter = express.Router();
+tourRouter
+  .route('/')
   .get(getAllTours)
   .post(createTour);
-app
-  .route('/api/v1/tours/:id')
+tourRouter
+  .route('/:id')
   .get(getTourById)
   .patch(updateTour)
   .delete(deleteTour);
+
+const userRouter = express.Router();
+userRouter
+  .route('/')
+  .get(getAllUsers)
+  .post(createUser);
+userRouter
+  .route('/:id')
+  .get(getUsersById)
+  .patch(updateUser)
+  .delete(deleteUser);
+
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 // server listening for requests
 app.listen(port, () => console.log(`app runing on port ${port}...`));
